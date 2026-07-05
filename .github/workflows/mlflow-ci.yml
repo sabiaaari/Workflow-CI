@@ -27,7 +27,7 @@ jobs:
       - name: Run MLflow Project (retrain model)
         working-directory: MLProject
         run: |
-          mlflow run . --env-manager=local -P n_estimators=100 -P max_depth=-1
+          mlflow run . --env-manager=local --experiment-name breast_cancer_classification_ci -P n_estimators=100 -P max_depth=-1
 
       - name: Upload MLflow run artifacts
         uses: actions/upload-artifact@v4

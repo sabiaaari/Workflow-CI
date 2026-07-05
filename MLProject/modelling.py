@@ -17,7 +17,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 def main(n_estimators: int, max_depth: int):
     max_depth = None if max_depth is None or max_depth <= 0 else max_depth
 
-    mlflow.set_experiment("breast_cancer_classification_ci")
+    
     mlflow.sklearn.autolog()
 
     train_df = pd.read_csv("breast_cancer_preprocessing/train.csv")
@@ -28,7 +28,9 @@ def main(n_estimators: int, max_depth: int):
     X_test = test_df.drop(columns=["target"])
     y_test = test_df["target"]
 
-    with mlflow.start_run(run_name="ci_retrain_random_forest"):
+    # Tanpa argumen: otomatis melanjutkan active run yang sudah dibuat oleh
+    # `mlflow run` (bukan membuat run baru), sehingga tidak ada konflik.
+    with mlflow.start_run():
         model = RandomForestClassifier(
             n_estimators=n_estimators, max_depth=max_depth, random_state=42
         )
