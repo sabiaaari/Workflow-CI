@@ -1,0 +1,36 @@
+name: MLflow CI - Retrain Model
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "MLProject/**"
+  workflow_dispatch: {}
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.7"
+
+      - name: Install MLflow and dependencies
+        run: |
+          pip install mlflow==2.19.0 scikit-learn==1.5.2 pandas==2.2.3 numpy==1.26.4
+
+      - name: Run MLflow Project (retrain model)
+        working-directory: MLProject
+        run: |
+          mlflow run . --env-manager=local -P n_estimators=100 -P max_depth=-1
+
+      - name: Upload MLflow run artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-run-artifacts
+          path: MLProject/mlruns/
